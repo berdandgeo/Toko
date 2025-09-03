@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toko Berdand Geo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f3f3f3;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #4CAF50, #2e8b57);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 14px 20px;
+      display: block;
+    }
+    nav a:hover { background: #4CAF50; }
+    section {
+      padding: 20px;
+      display: none;
+    }
+    section.active { display: block; }
+    .produk {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    .card button:hover { background: #388E3C; }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    .keranjang-list li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Toko Berdand Geo</h1>
+    <p>Hubungi WhatsApp: <a href="https://wa.me/6285788978035" style="color:yellow;">+62 857-8897-8035</a></p>
+  </header>
+  
+  <nav>
+    <a href="#" onclick="showSection('produk')">Produk</a>
+    <a href="#" onclick="showSection('keranjang')">Keranjang</a>
+    <a href="#" onclick="showSection('alamat')">Alamat Pembeli</a>
+    <a href="#" onclick="showSection('tentang')">Tentang Kami</a>
+  </nav>
+  
+  <section id="produk" class="active">
+    <h2>Daftar Produk</h2>
+    <div class="produk">
+      <div class="card">
+        <h3>Ganci</h3>
+        <p>Harga: Rp 8.000</p>
+        <button onclick="tambahKeranjang('Ganci', 8000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="card">
+        <h3>Stiker Nama</h3>
+        <p>Harga: Rp 10.000</p>
+        <button onclick="tambahKeranjang('Stiker Nama', 10000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="card">
+        <h3>Foto Poloid</h3>
+        <p>Harga: Rp 10.000</p>
+        <button onclick="tambahKeranjang('Foto Poloid', 10000)">Tambah ke Keranjang</button>
+      </div>
+    </div>
+  </section>
+  
+  <section id="keranjang">
+    <h2>Keranjang Belanja</h2>
+    <ul id="keranjangList" class="keranjang-list"></ul>
+    <p><strong>Total: Rp <span id="totalHarga">0</span></strong></p>
+  </section>
+  
+  <section id="alamat">
+    <h2>Alamat Pembeli</h2>
+    <form onsubmit="return kirimPesanan()">
+      <label>Nama:</label><br>
+      <input type="text" id="nama" required><br><br>
+      <label>Alamat:</label><br>
+      <textarea id="alamatInput" required></textarea><br><br>
+      <button type="submit">Kirim Pesanan via WhatsApp</button>
+    </form>
+  </section>
+  
+  <section id="tentang">
+    <h2>Tentang Kami</h2>
+    <p>Toko <strong>Berdand Geo</strong> menjual berbagai produk unik seperti gantungan kunci, stiker nama, dan foto poloid dengan harga terjangkau.</p>
+  </section>
+  
+  <footer>
+    <p>&copy; 2025 Toko Berdand Geo</p>
+  </footer>
+  
+  <script>
+    let keranjang = [];
+    
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+    
+    function tambahKeranjang(nama, harga) {
+      keranjang.push({nama, harga});
+      updateKeranjang();
+      alert(nama + " berhasil ditambahkan!");
+    }
+    
+    function updateKeranjang() {
+      const list = document.getElementById("keranjangList");
+      list.innerHTML = "";
+      let total = 0;
+      keranjang.forEach(item => {
+        let li = document.createElement("li");
+        li.textContent = item.nama + " - Rp " + item.harga.toLocaleString();
+        list.appendChild(li);
+        total += item.harga;
+      });
+      document.getElementById("totalHarga").textContent = total.toLocaleString();
+    }
+    
+    function kirimPesanan() {
+      let nama = document.getElementById("nama").value;
+      let alamat = document.getElementById("alamatInput").value;
+      if(keranjang.length === 0){
+        alert("Keranjang masih kosong!");
+        return false;
+      }
+      let pesan = "Halo, saya " + nama + "%0AAlamat: " + alamat + "%0APesanan:%0A";
+      let total = 0;
+      keranjang.forEach(item => {
+        pesan += "- " + item.nama + " Rp " + item.harga.toLocaleString() + "%0A";
+        total += item.harga;
+      });
+      pesan += "Total: Rp " + total.toLocaleString();
+      window.open("https://wa.me/6285788978035?text=" + pesan, "_blank");
+      return false;
+    }
+  </script>
+</body>
+</html>
